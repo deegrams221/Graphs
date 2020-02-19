@@ -1,3 +1,21 @@
+"""
+Implement a function that shows all the friends in a user's extended social network and chain of friendships that link them. The number of connections between one user and another are called the degrees of separation.
+
+How will the performance scale as more users join? Implement a feature that creates large numbers of users to the network and assigns them a random distribution of friends.
+
+`populateGraph()` takes in a number of users to create and the average number of friends each user should have and creates them
+
+To create N random friendships, you could create a list with all possible friendship combinations, shuffle the list, then grab the first N elements from the list. You will need to `import random` to get shuffle.
+
+`addFriendship(1, 2)` is the same as `addFriendship(2, 1)`. You should avoid calling one after the other since it will do nothing but print a warning. You can avoid this by only creating friendships where user1 < user2.
+
+`getAllSocialPaths()` takes a userID and returns a dictionary containing every user in that user's extended network along with the shortest friendship path between each.
+
+What kind of graph search guarantees you a shortest path?
+Instead of using a `set` to mark users as visited, you could use a `dictionary`. Similar to sets, checking if something is in a dictionary runs in O(1) time. If the visited user is the key, what would the value be?
+"""
+
+from util import Queue
 import random
 ​
 class User:
@@ -46,16 +64,17 @@ class SocialGraph:
         self.last_id = 0
         self.users = {}
         self.friendships = {}
-        # !!!! IMPLEMENT ME
 ​
         # Add users
         for i in range(num_users):
-            self.add_user(f"User {i+1}")
+            # call add_user function until the number of users is num_users
+            self.add_user(f"User {i + 1}")
 ​
         # Create friendships
         # create a list with all possible friendships
         possible_friendships = []
         for user_id in self.users:
+            # to avoid duplicates ensure that the first id is smaller than the 2nd id
             for friend_id in range(user_id + 1, self.last_id + 1):
                 possible_friendships.append((user_id, friend_id))
 ​
@@ -65,7 +84,8 @@ class SocialGraph:
         print("----")
         print(possible_friendships)
         print("----")
-        # Grab the first N pairs from the list and create those friendships
+
+        # Grab(slice) the first N pairs from the list and create those friendships
         for i in range(num_users * avg_friendships // 2):
             friendship = possible_friendships[i]
             self.add_friendship(friendship[0], friendship[1])
@@ -85,14 +105,24 @@ class SocialGraph:
         The key is the friend's ID and the value is the path.
         """
         visited = {}  # Note that this is a dictionary, not a set
-        # !!!! IMPLEMENT ME
+
+        # create the queue
+        # BFS(shortest path), so add start id to the queue
+        # enqueue the user id in list, build possible path, keep a good one
+        # while the queue is not empty...
+            # create path
+            # create new user id
+            # check if the new user id had is visited...
+                # if not, set dict of path from starting to everyone else
+                # then for each neighbor in friendships of new user id...
+                    # Make a copy of the path then add
         return visited
 ​
 ​
 if __name__ == '__main__':
     sg = SocialGraph()
     sg.populate_graph(10, 2)
-    print(sg.users)
-    print(sg.friendships)
-    # connections = sg.get_all_social_paths(1)
-    # print(connections)
+    print(f"USERS: {sg.users}")
+    print(f"FRIENDSHIPS: {sg.friendships}")
+    connections = sg.get_all_social_paths(1)
+    print(F"CONNECTIONS: {connections}")
