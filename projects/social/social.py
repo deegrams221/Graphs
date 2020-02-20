@@ -132,10 +132,16 @@ class SocialGraph:
 
 if __name__ == '__main__':
     sg = SocialGraph()
-    sg.populate_graph(10, 2)
+    sg.populate_graph(1000, 5)
     print(f"USERS: {sg.users}")
     print("----")
     print(f"FRIENDSHIPS: {sg.friendships}")
     print("----")
     connections = sg.get_all_social_paths(1)
     print(F"CONNECTIONS: {connections}")
+    print("----")
+    print(f"Users in extended social network: {len(connections) - 1}") # (-1 bc can't be friends with self)
+    avg_degree_sep = 0
+    for user_id in connections:
+        avg_degree_sep += len(connections[user_id])
+    print(f"Average degree of separation: {avg_degree_sep/len(connections)}")
